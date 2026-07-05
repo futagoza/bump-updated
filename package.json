@@ -1,0 +1,43 @@
+{
+    "name": "bump-updated",
+    "version": "1.0.0",
+    "description": "Will bump any workspace packages updated since the last git tag, sync workspace packages, npm publish any updated workspace packages and git tag the new release.",
+    "keywords": [
+        "bump",
+        "sync",
+        "workspaces",
+        "package.json",
+        "versioning"
+    ],
+    "author": "Futago-za Ryuu <futagoza.ryuu@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/futagoza/bump-updated.git"
+    },
+    "type": "module",
+    "main": "index.js",
+    "bin": "bin/bump-updated.js",
+    "dependencies": {
+        "@futagoza/child-process": "1.1.0",
+        "@clack/prompts": "1.7.0",
+        "@manypkg/get-packages": "3.1.0",
+        "dateformat": "5.0.3",
+        "json-parse-even-better-errors": "6.0.0",
+        "picomatch": "4.0.5",
+        "semver": "7.8.5",
+        "yoctocolors": "2.1.2",
+        "upath": "3.0.7"
+    },
+    "devDependencies": {
+        "eslint": "10.5.0"
+    },
+    "scripts": {
+        "bump": "node bin/bump-updated.js --debug --force",
+        "preview": "node bin/bump-updated.js --debug --dry",
+        "test": "eslint"
+    },
+    "engines": {
+        "node": ">= 20"
+    },
+    "license": "MIT"
+}

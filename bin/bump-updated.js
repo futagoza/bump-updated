@@ -1,0 +1,134 @@
+#!/usr/bin/env node
+
+import fs from "node:fs/promises"
+import path from "node:path"
+import { bump, utils } from "../index.js"
+
+const argv = process.argv.slice( 2 )
+let REPOSITORY;
+let TARGETS = []
+let DRY_RUN = false
+let devDependencies = true
+
+const { debug } = utils.log
+
+function _die( error ) {
+
+    utils.log.error( error )
+    process.exit( 1 )
+
+}
+
+async function _resolve( base, filename ) {
+
+    return path.join( await fs.realpath( base ), filename )
+
+}
+
+let skip = false
+await utils.serial( argv, async ( arg, n ) => {
+
+    if ( skip ) {
+
+        skip = false
+        return
+
+    }
+
+    if ( arg === "--all" || arg === "--force" ) {
+
+        if ( Array.isArray( TARGETS ) && TARGETS.length ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
+        if ( TARGETS === "all" ) _die( "Multiple use's of the `--all` option/flag detected!" )
+
+        debug( `Valid "${ arg }" provided; setting TARGETS to "all"` )
+        TARGETS = "all"
+        return
+
+    }
+
+    if ( arg === "--debug" ) {
+
+        debug()
+        return
+
+    }
+
+    if ( arg === "--dry" ) {
+
+        if ( DRY_RUN === true ) _die( "Multiple use's of the `--dry` option/flag detected!" )
+
+        debug( `Valid "--dry" provided; setting DRY_RUN to "true"` )
+        DRY_RUN = true
+        return
+
+    }
+
+    if ( arg === "--no-dev" ) {
+
+        if ( devDependencies === false ) _die( "Multiple use's of the `--no-dev` option/flag detected!" )
+
+        debug( `Valid "--no-dev" provided; setting devDependencies to "false"` )
+        devDependencies = false
+        return
+
+    }
+
+    if ( arg === "-p" ) {
+
+        if ( REPOSITORY ) _die( `The "-p" option/flag was already passed with the value ${ REPOSITORY }` )
+
+        const input = argv[ n + 1 ]
+        if ( ! input ) _die( "An input argument must be passed with the `-p` option/flag!" )
+
+        const dir = await _resolve( process.cwd(), input )
+        if ( ! dir ) _die( "A valid directory must be passed with the `-p` option/flag!" )
+
+        // ☝️ A simple `if` check for this is already done above, at the start of this code block
+        // eslint-disable-next-line require-atomic-updates
+        REPOSITORY = dir
+
+        // ☝️ A simple `if` check for this is already done above, at the start of the loop function block
+        // eslint-disable-next-line require-atomic-updates
+        skip = true
+
+        debug( `Valid "-p" provided; REPOSITORY set to "${ dir }"` )
+        return
+
+    }
+
+    if ( TARGETS === "all" ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
+    if ( TARGETS.includes( arg ) ) _die( `The input "${ arg }" was supplied multiple times!` )
+
+    debug( `Adding "${ arg }" to list of inputs` )
+    TARGETS.push( arg )
+
+} )
+
+if ( Array.isArray( TARGETS ) && TARGETS.length === 0 ) {
+
+    debug( `No inputs were provided; setting TARGETS to "updated"` )
+    TARGETS = "updated"
+
+}
+
+if ( ! REPOSITORY ) {
+
+    REPOSITORY = process.cwd()
+    debug( `No "-p" was provided; REPOSITORY set to the cwd: "${ REPOSITORY }"` )
+
+}
+
+try {
+
+    debug( "REPOSITORY: ", REPOSITORY )
+    debug( "TARGETS: ", TARGETS )
+    debug( "DRY_RUN: ", DRY_RUN )
+    debug( "devDependencies: ", devDependencies )
+
+    await bump( REPOSITORY, TARGETS, DRY_RUN, devDependencies )
+
+} catch ( error ) {
+
+    _die( error )
+
+}
