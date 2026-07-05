@@ -1,2 +1,85 @@
-# bump-updated
-Simple prompt-based version bumping for NPM workspace packages
+> module only package for native ES2022+ (Node 20+) use
+
+Simple prompt-based version bumping for NPM workspace packages.
+
+_**You must have committed package.json files previously and be logged into the NPM CLI otherwise errors are thrown by each!**_
+
+## CLI Usage
+
+```bash
+# 1. Set's the current working directory as the path; is expected to be a monorepo directory
+# 2. Find all workspace packages (Yarn, npm, Lerna, pnpm, Bun or Rush)
+# 3. Prompt for a version
+# 4. then bump packages since last git tag (or HEAD)
+# 5. sync workspace deps
+# 6. and publish/tag/commit changes
+bump-updated
+
+# Will version bump all workspace packages (cannot have inputs)
+bump-updated --all
+bump-updated --force
+
+# Enables debug messages
+bump-updated --debug
+
+# Will only perform version bumping and sync workspace deps
+bump-updated --dry
+
+# Will not bump devDependencies for workspace packages (not recommended)
+bump-updated --no-dev
+
+# Change the current working directory (useful for multi purpose repositories)
+bump-updated -p [path]
+
+# Manually choose workspace packages to version bump
+bump-updated "@project/core" "@project/*-plugin"
+```
+
+## API Usage
+
+```js
+import { bump, sync, utils } from "bump-updated"
+
+/*
+
+Will do the following in order:
+
+    - find all workspace packages (Yarn, npm, Lerna, pnpm, Bun or Rush)
+    - prompt for a version
+    - version bump target (default updated) workspace packages
+    - sync workspace packages
+    - npm publish all bumped workspace packages
+    - git tag monorepo
+    - git push monorepo
+
+Arguments:
+
+    - `path` = required; is expected to point to a monorepo directory
+    - `targets` = optional; can either be
+        - "updated" (default)
+        - "all"
+        - an array of specific packages (or simple glob patterns to match)
+    - `dry` = `false` by default; on `true` only bumps versions and syncs
+    - `devDependencies` = `true` by default; sync devDependencies field also
+
+*/
+bump( path, targets, dry, devDependencies )
+
+/*
+
+Sync workspace packages that have `dependencies` (and optionally `devDependencies`) on each other.
+
+Arguments:
+
+    - `path` = required; is expected to point to a monorepo directory
+    - `devDependencies` = `true` by default; sync devDependencies field also
+
+*/
+sync( path, devDependencies )
+
+// Enable debug logging (or pass true/false as an argument to enable/disable manually)
+utils.log.debug()
+
+// Gets a list of package directories in the workspace
+utils.getWorkspacePackages( path )
+```
