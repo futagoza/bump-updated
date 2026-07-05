@@ -40,9 +40,8 @@
         "node": ">= 20"
     },
     "files": [
-        "bin",
         "lib",
-        "index.js"
+        "CHANGELOG.md"
     ],
     "license": "MIT"
 }
