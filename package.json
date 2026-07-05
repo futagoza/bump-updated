@@ -39,5 +39,10 @@
     "engines": {
         "node": ">= 20"
     },
+    "files": [
+        "bin",
+        "lib",
+        "index.js"
+    ],
     "license": "MIT"
 }
