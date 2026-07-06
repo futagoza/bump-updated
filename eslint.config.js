@@ -1,3 +1,3 @@
-import futagoza from "../eslint-config-futagozaryuu/packages/@futagoza/eslint-config/index.js"
+import futagoza from "@futagoza/eslint-config"
 
 export default futagoza
