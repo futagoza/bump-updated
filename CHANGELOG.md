@@ -1,3 +1,9 @@
+<a name="2.0.2"></a>
+## [v2.0.2](https://github.com/futagoza/bump-updated/compare/v2.0.1...v2.0.2) (2026-07-06)
+
+* Fix workspace directory normalization
+* Added debug messages for bump()
+
 <a name="2.0.1"></a>
 ## [v2.0.1](https://github.com/futagoza/bump-updated/compare/v2.0.0...v2.0.1) (2026-07-06)
 
