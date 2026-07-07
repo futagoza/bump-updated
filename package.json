@@ -18,7 +18,7 @@
     "main": "index.js",
     "bin": "bin/bump-updated.js",
     "dependencies": {
-        "@futagoza/child-process": "1.1.0",
+        "@futagoza/child-process": "2.0.2",
         "@clack/prompts": "1.7.0",
         "@manypkg/get-packages": "3.1.0",
         "dateformat": "5.0.3",
