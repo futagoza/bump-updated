@@ -1,3 +1,9 @@
+<a name="2.1.0"></a>
+## [v2.1.0](https://github.com/futagoza/bump-updated/compare/v2.0.0...v2.1.0) (2026-07-07)
+
+* Update to `@futagoza/child-process` v2
+* Now ignoring changelog (case-insensitive check) if found while checking for uncomitted files
+
 <a name="2.0.3"></a>
 ## [v2.0.3](https://github.com/futagoza/bump-updated/compare/v2.0.2...v2.0.3) (2026-07-06)
 
