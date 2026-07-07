@@ -1,4 +1,8 @@
-> module only package for native ES2022+ (Node 20+) use
+[![release](https://img.shields.io/npm/v/bump-updated.svg)](https://www.npmjs.com/package/bump-updated)
+[![History](https://img.shields.io/badge/bump--updated-changelog-yellow)](https://github.com/futagoza/bump-updated/blob/master/CHANGELOG.md)
+[![license](https://img.shields.io/badge/license-mit-blue.svg)](https://opensource.org/licenses/MIT)
+
+> This library is developed with Node 20+ (ES2022+ modules) in mind and may not work properly with prior versions of Node.
 
 Simple prompt-based version bumping for NPM workspace packages.
 
