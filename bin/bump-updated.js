@@ -133,11 +133,11 @@ if ( ! REPOSITORY ) {
 try {
 
     debug( "Using the following options (set via passed arguments or defaults):" )
-    debug( "    -p:          ", REPOSITORY )
-    debug( "    --dry:       ", DRY_RUN )
-    debug( "    --force:     ", FORCE )
-    debug( "    --no-dev:    ", ! devDependencies )
-    debug( "    ...[inputs]: ", TARGETS )
+    debug( "repository (-p)                 =", REPOSITORY )
+    debug( "opts.devDependencies (--no-dev) =", ! devDependencies )
+    debug( "opts.dry (--dry)                =", DRY_RUN )
+    debug( "opts.force (--force)            =", FORCE )
+    debug( "opts.targets (...inputs)        =", TARGETS )
 
     await bump( REPOSITORY, {
         devDependencies,
