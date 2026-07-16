@@ -2,22 +2,21 @@
 
 import fs from "node:fs/promises"
 import path from "node:path"
-import { bump, utils } from "../index.js"
+import bump, { defaultOptions } from "../lib/bump.js"
+import { log, serial } from "../lib/utils.js"
 
 const argv = process.argv.slice( 2 )
 let REPOSITORY
-let devDependencies = true
-let DRY_RUN = false
-let FORCE = false
-let REBUILD_SCRIPT = true
-let TEST_SCRIPT = true
-let TARGETS = []
-
-const { debug } = utils.log
+const FLAGS_SET = []
+const opts = {
+    ...defaultOptions,
+    /** @type {typeof defaultOptions.targets} */
+    targets: [],
+}
 
 function _die( error ) {
 
-    utils.log.error( error )
+    log.error( error )
     process.exit( 1 )
 
 }
@@ -29,7 +28,7 @@ async function _resolve( base, filename ) {
 }
 
 let skip = false
-await utils.serial( argv, async ( arg, n ) => {
+await serial( argv, async ( arg, n ) => {
 
     if ( skip ) {
 
@@ -38,71 +37,62 @@ await utils.serial( argv, async ( arg, n ) => {
 
     }
 
+    if ( arg.startsWith( "--" ) && FLAGS_SET.includes( arg ) ) _die( `Multiple use's of the ${ arg } option/flag detected!` )
+
     if ( arg === "--all" ) {
 
-        if ( Array.isArray( TARGETS ) && TARGETS.length ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
-        if ( TARGETS === "all" ) _die( "Multiple use's of the `--all` option/flag detected!" )
+        if ( opts.targets.length ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
 
-        debug( `Valid "${ arg }" provided; setting TARGETS to "all"` )
-        TARGETS = "all"
+        log.debug( `Valid "${ arg }" provided; setting "opts.targets" to "all"` )
+        opts.targets = "all"
         return
 
     }
 
     if ( arg === "--debug" ) {
 
-        debug( true )
-        debug( `Debugging enabled due to the "--debug" flag/option being passed.` )
+        log.debug( true )
+        log.debug( `Debugging enabled due to the "--debug" flag/option being passed.` )
         return
 
     }
 
     if ( arg === "--dry" ) {
 
-        if ( DRY_RUN === true ) _die( "Multiple use's of the `--dry` option/flag detected!" )
-
-        debug( `Valid "--dry" provided; setting DRY_RUN to "true"` )
-        DRY_RUN = true
+        log.debug( `Valid "--dry" provided; setting "opts.dry" to "true"` )
+        opts.dry = true
         return
 
     }
 
     if ( arg === "--force" ) {
 
-        if ( FORCE ) _die( "Multiple use's of the `--force` option/flag detected!" )
-
-        debug( `Valid "--force" provided; setting FORCE to "true"` )
-        FORCE = true
+        log.debug( `Valid "--force" provided; setting "opts.force" to "true"` )
+        opts.force = true
         return
 
     }
 
     if ( arg === "--no-dev" ) {
 
-        if ( devDependencies === false ) _die( "Multiple use's of the `--no-dev` option/flag detected!" )
-
-        debug( `Valid "--no-dev" provided; setting devDependencies to "false"` )
-        devDependencies = false
+        log.debug( `Valid "--no-dev" provided; setting "opts.devDependencies" to "false"` )
+        opts.devDependencies = false
         return
 
     }
 
     if ( arg === "--no-rebuild" ) {
 
-        if ( REBUILD_SCRIPT === false ) _die( "Multiple use's of the `--no-rebuild` option/flag detected!" )
-
-        debug( `Valid "--no-rebuild" provided; setting REBUILD_SCRIPT to "false"` )
-        REBUILD_SCRIPT = false
+        log.debug( `Valid "--no-rebuild" provided; setting "opts.rebuild" to "false"` )
+        opts.rebuild = false
         return
 
     }
 
     if ( arg === "--no-test" ) {
 
-        if ( TEST_SCRIPT === false ) _die( "Multiple use's of the `--no-test` option/flag detected!" )
-
-        debug( `Valid "--no-test" provided; setting TEST_SCRIPT to "false"` )
-        TEST_SCRIPT = false
+        log.debug( `Valid "--no-test" provided; setting "opts.test" to "false"` )
+        opts.test = false
         return
 
     }
@@ -125,52 +115,47 @@ await utils.serial( argv, async ( arg, n ) => {
         // eslint-disable-next-line require-atomic-updates
         skip = true
 
-        debug( `Valid "-p" provided; REPOSITORY set to "${ dir }"` )
+        log.debug( `Valid "-p" provided; REPOSITORY set to "${ dir }"` )
         return
 
     }
 
-    if ( TARGETS === "all" ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
-    if ( TARGETS.includes( arg ) ) _die( `The input "${ arg }" was supplied multiple times!` )
+    if ( opts.targets === "all" ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
+    if ( opts.targets.includes( arg ) ) _die( `The input "${ arg }" was supplied multiple times!` )
 
-    debug( `Adding "${ arg }" to list of inputs` )
-    TARGETS.push( arg )
+    log.debug( `Adding "${ arg }" to list of inputs` )
+    opts.targets.push( arg )
 
 } )
 
-if ( Array.isArray( TARGETS ) && TARGETS.length === 0 ) {
+// Ensure `opts.targets` is set properly
+if ( Array.isArray( opts.targets ) && opts.targets.length === 0 ) {
 
-    debug( `No inputs were provided; setting TARGETS to "updated"` )
-    TARGETS = "updated"
+    log.debug( `No inputs were provided; setting "opts.targets" to "updated"` )
+    opts.targets = "updated"
 
 }
 
+// Ensure the repository argument is set
 if ( ! REPOSITORY ) {
 
     REPOSITORY = process.cwd()
-    debug( `No "-p" was provided; REPOSITORY set to the cwd: "${ REPOSITORY }"` )
+    log.debug( `No "-p" was provided; REPOSITORY set to the cwd: "${ REPOSITORY }"` )
 
 }
 
 try {
 
-    debug( "Using the following options (set via passed arguments or defaults):" )
-    debug( "repository (-p)          =", REPOSITORY )
-    debug( "opts.devDependencies     =", devDependencies, "(disable via --no-dev)" )
-    debug( "opts.dry (--dry)         =", DRY_RUN )
-    debug( "opts.force (--force)     =", FORCE )
-    debug( "opts.rebuild             =", REBUILD_SCRIPT, "(disable via --no-rebuild)" )
-    debug( "opts.test                =", TEST_SCRIPT, "(disable via --no-test)" )
-    debug( "opts.targets (...inputs) =", TARGETS )
+    log.debug( "Using the following options (set via passed arguments or defaults):" )
+    log.debug( "REPOSITORY (-p ...)      =", REPOSITORY )
+    log.debug( "opts.devDependencies     =", opts.devDependencies, "(disable via --no-dev)" )
+    log.debug( "opts.dry (--dry)         =", opts.dry )
+    log.debug( "opts.force (--force)     =", opts.force )
+    log.debug( "opts.rebuild             =", opts.rebuild, "(disable via --no-rebuild)" )
+    log.debug( "opts.test                =", opts.test, "(disable via --no-test)" )
+    log.debug( "opts.targets (...inputs) =", opts.targets )
 
-    await bump( REPOSITORY, {
-        devDependencies,
-        dry: DRY_RUN,
-        force: FORCE,
-        rebuild: REBUILD_SCRIPT,
-        targers: TARGETS,
-        test: TEST_SCRIPT,
-    } )
+    await bump( REPOSITORY, opts )
 
 } catch ( error ) {
 
