@@ -45,6 +45,10 @@ bump-updated --no-test
 # Change the current working directory (useful for multi purpose repositories)
 bump-updated -p [path]
 
+# You can choose the version modifier this way (e.g. major, minor, patch, etc)
+# NOTE: This disables the prompt asking for a new version.
+bump-updated -v [newversion]
+
 # Manually choose workspace packages to version bump
 bump-updated "@project/core" "@project/*-plugin"
 ```
@@ -79,6 +83,7 @@ bump( path, {
     devDependencies: true, // Sync devDependencies field in packages also
     dry: false,            // Only bumps versions and syncs dependencies (also enables force option)
     force: false,          // Ignores uncommitted (tracked) files in your repository
+    newversion: void 0,    // Choose the version modifier this way (e.g. major, minor, patch, etc)
     rebuild: true,         // Run any rebuild script in `package.json` files for the bumped packages
     targets: "updated",    // Can either be "updated" (default), "all" or an array of
                            // specific packages (or simple glob patterns to match)

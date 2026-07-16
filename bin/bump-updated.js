@@ -37,11 +37,11 @@ await serial( argv, async ( arg, n ) => {
 
     }
 
-    if ( arg.startsWith( "--" ) && FLAGS_SET.includes( arg ) ) _die( `Multiple use's of the ${ arg } option/flag detected!` )
+    if ( arg.startsWith( "--" ) && FLAGS_SET.includes( arg ) ) _die( `Multiple use's of the ${ arg } flag detected!` )
 
     if ( arg === "--all" ) {
 
-        if ( opts.targets.length ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
+        if ( opts.targets.length ) _die( "Input(s) are not allowed along with the `--all` flag!" )
 
         log.debug( `Valid "${ arg }" provided; setting "opts.targets" to "all"` )
         opts.targets = "all"
@@ -52,7 +52,7 @@ await serial( argv, async ( arg, n ) => {
     if ( arg === "--debug" ) {
 
         log.debug( true )
-        log.debug( `Debugging enabled due to the "--debug" flag/option being passed.` )
+        log.debug( `Debugging enabled due to the "--debug" flag being passed.` )
         return
 
     }
@@ -99,13 +99,13 @@ await serial( argv, async ( arg, n ) => {
 
     if ( arg === "-p" ) {
 
-        if ( REPOSITORY ) _die( `The "-p" option/flag was already passed with the value ${ REPOSITORY }` )
+        if ( REPOSITORY ) _die( `The "-p" option was already passed with the value ${ REPOSITORY }` )
 
         const input = argv[ n + 1 ]
-        if ( ! input ) _die( "An input argument must be passed with the `-p` option/flag!" )
+        if ( ! input ) _die( "An input argument must be passed with the `-p` option!" )
 
         const dir = await _resolve( process.cwd(), input )
-        if ( ! dir ) _die( "A valid directory must be passed with the `-p` option/flag!" )
+        if ( ! dir ) _die( "A valid directory must be passed with the `-p` option!" )
 
         // ☝️ A simple `if` check for this is already done above, at the start of this code block
         // eslint-disable-next-line require-atomic-updates
@@ -120,7 +120,21 @@ await serial( argv, async ( arg, n ) => {
 
     }
 
-    if ( opts.targets === "all" ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
+    if ( arg === "-v" ) {
+
+        if ( opts.newversion ) _die( `The "-v" option was already passed with the value ${ opts.newversion }` )
+
+        const input = argv[ n + 1 ]
+        if ( ! input ) _die( "An input argument must be passed with the `-v` option!" )
+
+        log.debug( `Valid "-v" provided; "opts.newversion" set to "${ input }"` )
+        opts.newversion = input
+        skip = true
+        return
+
+    }
+
+    if ( opts.targets === "all" ) _die( "Input(s) are not allowed along with the `--all` flag!" )
     if ( opts.targets.includes( arg ) ) _die( `The input "${ arg }" was supplied multiple times!` )
 
     log.debug( `Adding "${ arg }" to list of inputs` )
@@ -151,6 +165,7 @@ try {
     log.debug( "opts.devDependencies     =", opts.devDependencies, "(disable via --no-dev)" )
     log.debug( "opts.dry (--dry)         =", opts.dry )
     log.debug( "opts.force (--force)     =", opts.force )
+    log.debug( "opts.newversion (-v ...) =", opts.newversion )
     log.debug( "opts.rebuild             =", opts.rebuild, "(disable via --no-rebuild)" )
     log.debug( "opts.test                =", opts.test, "(disable via --no-test)" )
     log.debug( "opts.targets (...inputs) =", opts.targets )

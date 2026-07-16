@@ -33,7 +33,10 @@
         "eslint": "10.7.0"
     },
     "scripts": {
-        "bump": "node bin/bump-updated.js --debug --force",
+        "bump": "node bin/bump-updated.js --debug",
+        "bump:major": "node bin/bump-updated.js --debug -v major",
+        "bump:minor": "node bin/bump-updated.js --debug -v minor",
+        "bump:patch": "node bin/bump-updated.js --debug -v patch",
         "preview": "node bin/bump-updated.js --debug --dry",
         "test": "eslint"
     },

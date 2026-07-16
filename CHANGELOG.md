@@ -11,6 +11,7 @@
 * Run any `rebuild` script if present (disable via `--no-rebuild` or `opts.rebuild = false`)
 * Add the `--no-test` flag (and `! opts.test` option) to disable running `npm run test --if-present`
 * Ask for a git tag name if multiple versions were bumped due to passing `major`, `minor`, etc
+* Support bumping via a version modifier (e.g. major, minor, patch, etc); `-v` or `ops.newversion`
 
 <a name="2.1.0"></a>
 ## [v2.1.0](https://github.com/futagoza/bump-updated/compare/v2.0.0...v2.1.0) (2026-07-07)
