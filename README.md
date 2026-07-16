@@ -54,7 +54,7 @@ Will do the following in order:
     - prompt for a version
     - version bump target (default updated) workspace packages
     - sync workspace packages
-    - npm publish all bumped workspace packages
+    - npm publish all bumped workspace packages (private packages will be skipped)
     - git tag repository (with new version)
     - git push repository
 
