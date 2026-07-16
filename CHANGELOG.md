@@ -1,4 +1,5 @@
-## unreleased
+<a name="3.0.0"></a>
+## [v3.0.0](https://github.com/futagoza/bump-updated/compare/v2.1.0...v3.0.0) (2026-07-16)
 
 * Added badges to the top of the `README.md` file
 * Updated the Node v20+ message to be more clear
