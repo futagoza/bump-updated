@@ -125,7 +125,11 @@ try {
     debug( "DRY_RUN: ", DRY_RUN )
     debug( "devDependencies: ", devDependencies )
 
-    await bump( REPOSITORY, TARGETS, DRY_RUN, devDependencies )
+    await bump( REPOSITORY, {
+        dry: DRY_RUN,
+        devDependencies,
+        targers: TARGETS,
+    } )
 
 } catch ( error ) {
 

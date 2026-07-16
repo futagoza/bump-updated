@@ -4,14 +4,14 @@
 
 > This library is developed with Node 20+ (ES2022+ modules) in mind and may not work properly with prior versions of Node.
 
-Simple prompt-based version bumping for NPM workspace packages.
+Simple prompt-based version bumping for NPM workspace packages inside a git repository.
 
 _**You must have committed package.json files previously and be logged into the NPM CLI otherwise errors are thrown by each!**_
 
 ## CLI Usage
 
 ```bash
-# 1. Set's the current working directory as the path; is expected to be a monorepo directory
+# 1. Set's the current working directory as the path; is expected to be a repository directory
 # 2. Find all workspace packages (Yarn, npm, Lerna, pnpm, Bun or Rush)
 # 3. Prompt for a version
 # 4. then bump packages since last git tag (or HEAD)
@@ -53,21 +53,21 @@ Will do the following in order:
     - version bump target (default updated) workspace packages
     - sync workspace packages
     - npm publish all bumped workspace packages
-    - git tag monorepo
-    - git push monorepo
+    - git tag repository
+    - git push repository
 
 Arguments:
 
-    - `path` = required; is expected to point to a monorepo directory
-    - `targets` = optional; can either be
-        - "updated" (default)
-        - "all"
-        - an array of specific packages (or simple glob patterns to match)
-    - `dry` = `false` by default; on `true` only bumps versions and syncs
-    - `devDependencies` = `true` by default; sync devDependencies field also
+    1. `path` = required; is expected to point to a repository directory
+    2. `opts` = Additional options to control the behavior of `bump()`
 
 */
-bump( path, targets, dry, devDependencies )
+bump( path, {
+    dry: false,            // `false` by default; on `true` only bumps versions and syncs
+    devDependencies: true, // `true` by default; sync devDependencies field also
+    targets: "updated",    // can either be "updated" (default), "all" or an array of
+                           // specific packages (or simple glob patterns to match)
+} )
 
 /*
 
@@ -75,7 +75,7 @@ Sync workspace packages that have `dependencies` (and optionally `devDependencie
 
 Arguments:
 
-    - `path` = required; is expected to point to a monorepo directory
+    - `path` = required; is expected to point to a repository directory
     - `devDependencies` = `true` by default; sync devDependencies field also
 
 */
