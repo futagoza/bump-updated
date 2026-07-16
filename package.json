@@ -1,6 +1,6 @@
 {
     "name": "bump-updated",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "Will bump any workspace packages updated since the last git tag, sync workspace packages, npm publish any updated workspace packages and git tag the new release.",
     "keywords": [
         "bump",

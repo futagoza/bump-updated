@@ -1,3 +1,8 @@
+<a name="3.0.1"></a>
+## [v3.0.1](https://github.com/futagoza/bump-updated/compare/v3.0.0...v3.0.1) (2026-07-16)
+
+* Try to remove `v` from the start of the version string before `git tag`
+
 <a name="3.0.0"></a>
 ## [v3.0.0](https://github.com/futagoza/bump-updated/compare/v2.1.0...v3.0.0) (2026-07-16)
 
