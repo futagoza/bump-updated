@@ -6,6 +6,8 @@
 * Changed additional arguments in `bump` to options: `bump(path, targets, dry, devDependencies)` to `bum(path, opts)`
 * Clarify monorep -> repository in `README.md`
 * `--force` is now unrelated to `--all`; This flag now ensures no git check is done for uncomitted files
+* Bump `eslint` devDependency to `v10.7.0`
+* Bump `@futagoza/eslint-config` devDependency to `v17.1.0`
 
 <a name="2.1.0"></a>
 ## [v2.1.0](https://github.com/futagoza/bump-updated/compare/v2.0.0...v2.1.0) (2026-07-07)

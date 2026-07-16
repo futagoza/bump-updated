@@ -29,8 +29,8 @@
         "upath": "3.0.8"
     },
     "devDependencies": {
-        "@futagoza/eslint-config": "17.0.0",
-        "eslint": "10.6.0"
+        "@futagoza/eslint-config": "17.1.0",
+        "eslint": "10.7.0"
     },
     "scripts": {
         "bump": "node bin/bump-updated.js --debug --force",
