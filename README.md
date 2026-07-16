@@ -17,8 +17,8 @@ _**You must have committed package.json files previously and be logged into the 
 # 4. Bump packages since last git tag (or HEAD)
 # 5. Sync workspace deps
 # 6. Run any rebuild scripts for the bumped packages
-# 7. Run test script in the root of the repository (if present)
-# 8. and publish/tag/commit changes
+# 7. Run the test script in the root of the repository (if present)
+# 8. `npm publish`, `git tag`, `git commit` changes and `git push`
 bump-updated
 
 # Will version bump all workspace packages (cannot have inputs)
@@ -38,6 +38,9 @@ bump-updated --no-dev
 
 # Skip running the `rebuild` script if present in the updating packages
 bump-updated --no-rebuild
+
+# Skip running the `test` script if present in the root of the repository
+bump-updated --no-test
 
 # Change the current working directory (useful for multi purpose repositories)
 bump-updated -p [path]
@@ -79,6 +82,7 @@ bump( path, {
     rebuild: true,         // Run any rebuild script in `package.json` files for the bumped packages
     targets: "updated",    // Can either be "updated" (default), "all" or an array of
                            // specific packages (or simple glob patterns to match)
+    test: true,            // Run the test script in the root of the repository (if present)
 } )
 
 /*

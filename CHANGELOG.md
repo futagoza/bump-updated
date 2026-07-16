@@ -2,7 +2,6 @@
 
 * Added badges to the top of the `README.md` file
 * Updated the Node v20+ message to be more clear
-* Add the `--if-present` flag when trying to run tests, that way it doesn't fail when no test script is defined
 * Changed additional arguments in `bump` to options: `bump(path, targets, dry, devDependencies)` to `bum(path, opts)`
 * Clarify monorep -> repository in `README.md`
 * `--force` is now unrelated to `--all`; This flag now ensures no git check is done for uncomitted files
@@ -10,6 +9,7 @@
 * Bump `@futagoza/eslint-config` devDependency to `v17.1.0`
 * Private packages are now skipped when running `npm publish` to ensure NPM doesn't cry about it
 * Run any `rebuild` script if present (disable via `--no-rebuild` or `opts.rebuild = false`)
+* Add the `--no-test` flag (and `! opts.test` option) to disable running `npm run test --if-present`
 
 <a name="2.1.0"></a>
 ## [v2.1.0](https://github.com/futagoza/bump-updated/compare/v2.0.0...v2.1.0) (2026-07-07)

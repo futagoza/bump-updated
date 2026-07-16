@@ -9,7 +9,8 @@ let REPOSITORY
 let devDependencies = true
 let DRY_RUN = false
 let FORCE = false
-let REBUILD = true
+let REBUILD_SCRIPT = true
+let TEST_SCRIPT = true
 let TARGETS = []
 
 const { debug } = utils.log
@@ -88,10 +89,20 @@ await utils.serial( argv, async ( arg, n ) => {
 
     if ( arg === "--no-rebuild" ) {
 
-        if ( REBUILD === false ) _die( "Multiple use's of the `--no-rebuild` option/flag detected!" )
+        if ( REBUILD_SCRIPT === false ) _die( "Multiple use's of the `--no-rebuild` option/flag detected!" )
 
-        debug( `Valid "--no-rebuild" provided; setting REBUILD to "false"` )
-        REBUILD = false
+        debug( `Valid "--no-rebuild" provided; setting REBUILD_SCRIPT to "false"` )
+        REBUILD_SCRIPT = false
+        return
+
+    }
+
+    if ( arg === "--no-test" ) {
+
+        if ( TEST_SCRIPT === false ) _die( "Multiple use's of the `--no-test` option/flag detected!" )
+
+        debug( `Valid "--no-test" provided; setting TEST_SCRIPT to "false"` )
+        TEST_SCRIPT = false
         return
 
     }
@@ -148,15 +159,17 @@ try {
     debug( "opts.devDependencies     =", devDependencies, "(disable via --no-dev)" )
     debug( "opts.dry (--dry)         =", DRY_RUN )
     debug( "opts.force (--force)     =", FORCE )
-    debug( "opts.rebuild             =", REBUILD, "(disable via --no-rebuild)" )
+    debug( "opts.rebuild             =", REBUILD_SCRIPT, "(disable via --no-rebuild)" )
+    debug( "opts.test                =", TEST_SCRIPT, "(disable via --no-test)" )
     debug( "opts.targets (...inputs) =", TARGETS )
 
     await bump( REPOSITORY, {
         devDependencies,
         dry: DRY_RUN,
         force: FORCE,
-        rebuild: REBUILD,
+        rebuild: REBUILD_SCRIPT,
         targers: TARGETS,
+        test: TEST_SCRIPT,
     } )
 
 } catch ( error ) {
