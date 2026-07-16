@@ -14,9 +14,11 @@ _**You must have committed package.json files previously and be logged into the 
 # 1. Set's the current working directory as the path; is expected to be a repository directory
 # 2. Find all workspace packages (Yarn, npm, Lerna, pnpm, Bun or Rush)
 # 3. Prompt for a version
-# 4. then bump packages since last git tag (or HEAD)
-# 5. sync workspace deps
-# 6. and publish/tag/commit changes
+# 4. Bump packages since last git tag (or HEAD)
+# 5. Sync workspace deps
+# 6. Run any rebuild scripts for the bumped packages
+# 7. Run test script in the root of the repository (if present)
+# 8. and publish/tag/commit changes
 bump-updated
 
 # Will version bump all workspace packages (cannot have inputs)
@@ -33,6 +35,9 @@ bump-updated --force
 
 # Will not bump devDependencies for workspace packages (not recommended)
 bump-updated --no-dev
+
+# Skip running the `rebuild` script if present in the updating packages
+bump-updated --no-rebuild
 
 # Change the current working directory (useful for multi purpose repositories)
 bump-updated -p [path]
@@ -54,6 +59,8 @@ Will do the following in order:
     - prompt for a version
     - version bump target (default updated) workspace packages
     - sync workspace packages
+    - rebuild any bumped workspace packages
+    - run test script in the root of the repository (if present)
     - npm publish all bumped workspace packages (private packages will be skipped)
     - git tag repository (with new version)
     - git push repository
@@ -69,6 +76,7 @@ bump( path, {
     devDependencies: true, // Sync devDependencies field in packages also
     dry: false,            // Only bumps versions and syncs dependencies (also enables force option)
     force: false,          // Ignores uncommitted (tracked) files in your repository
+    rebuild: true,         // Run any rebuild script in `package.json` files for the bumped packages
     targets: "updated",    // Can either be "updated" (default), "all" or an array of
                            // specific packages (or simple glob patterns to match)
 } )

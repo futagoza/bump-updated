@@ -9,6 +9,7 @@ let REPOSITORY
 let devDependencies = true
 let DRY_RUN = false
 let FORCE = false
+let REBUILD = true
 let TARGETS = []
 
 const { debug } = utils.log
@@ -85,6 +86,16 @@ await utils.serial( argv, async ( arg, n ) => {
 
     }
 
+    if ( arg === "--no-rebuild" ) {
+
+        if ( REBUILD === false ) _die( "Multiple use's of the `--no-rebuild` option/flag detected!" )
+
+        debug( `Valid "--no-rebuild" provided; setting REBUILD to "false"` )
+        REBUILD = false
+        return
+
+    }
+
     if ( arg === "-p" ) {
 
         if ( REPOSITORY ) _die( `The "-p" option/flag was already passed with the value ${ REPOSITORY }` )
@@ -133,16 +144,18 @@ if ( ! REPOSITORY ) {
 try {
 
     debug( "Using the following options (set via passed arguments or defaults):" )
-    debug( "repository (-p)                 =", REPOSITORY )
-    debug( "opts.devDependencies (--no-dev) =", ! devDependencies )
-    debug( "opts.dry (--dry)                =", DRY_RUN )
-    debug( "opts.force (--force)            =", FORCE )
-    debug( "opts.targets (...inputs)        =", TARGETS )
+    debug( "repository (-p)          =", REPOSITORY )
+    debug( "opts.devDependencies     =", devDependencies, "(disable via --no-dev)" )
+    debug( "opts.dry (--dry)         =", DRY_RUN )
+    debug( "opts.force (--force)     =", FORCE )
+    debug( "opts.rebuild             =", REBUILD, "(disable via --no-rebuild)" )
+    debug( "opts.targets (...inputs) =", TARGETS )
 
     await bump( REPOSITORY, {
         devDependencies,
         dry: DRY_RUN,
         force: FORCE,
+        rebuild: REBUILD,
         targers: TARGETS,
     } )
 
