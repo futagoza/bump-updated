@@ -21,13 +21,15 @@ bump-updated
 
 # Will version bump all workspace packages (cannot have inputs)
 bump-updated --all
-bump-updated --force
 
 # Enables debug messages
 bump-updated --debug
 
-# Will only perform version bumping and sync workspace deps
+# Will only perform version bumping and sync workspace deps (also enables --force)
 bump-updated --dry
+
+# Will not check for uncommitted files
+bump-updated --force
 
 # Will not bump devDependencies for workspace packages (not recommended)
 bump-updated --no-dev
@@ -53,19 +55,21 @@ Will do the following in order:
     - version bump target (default updated) workspace packages
     - sync workspace packages
     - npm publish all bumped workspace packages
-    - git tag repository
+    - git tag repository (with new version)
     - git push repository
 
 Arguments:
 
     1. `path` = required; is expected to point to a repository directory
-    2. `opts` = Additional options to control the behavior of `bump()`
+    2. `opts` = Additional options to control the behavior of `bump()`;
+                Defaults for these options are shown as values below
 
 */
 bump( path, {
-    dry: false,            // `false` by default; on `true` only bumps versions and syncs
-    devDependencies: true, // `true` by default; sync devDependencies field also
-    targets: "updated",    // can either be "updated" (default), "all" or an array of
+    devDependencies: true, // Sync devDependencies field in packages also
+    dry: false,            // Only bumps versions and syncs dependencies (also enables force option)
+    force: false,          // Ignores uncommitted (tracked) files in your repository
+    targets: "updated",    // Can either be "updated" (default), "all" or an array of
                            // specific packages (or simple glob patterns to match)
 } )
 

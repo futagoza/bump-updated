@@ -5,10 +5,11 @@ import path from "node:path"
 import { bump, utils } from "../index.js"
 
 const argv = process.argv.slice( 2 )
-let REPOSITORY;
-let TARGETS = []
-let DRY_RUN = false
+let REPOSITORY
 let devDependencies = true
+let DRY_RUN = false
+let FORCE = false
+let TARGETS = []
 
 const { debug } = utils.log
 
@@ -35,7 +36,7 @@ await utils.serial( argv, async ( arg, n ) => {
 
     }
 
-    if ( arg === "--all" || arg === "--force" ) {
+    if ( arg === "--all" ) {
 
         if ( Array.isArray( TARGETS ) && TARGETS.length ) _die( "Input(s) are not allowed along with the `--all` option/flag!" )
         if ( TARGETS === "all" ) _die( "Multiple use's of the `--all` option/flag detected!" )
@@ -48,7 +49,8 @@ await utils.serial( argv, async ( arg, n ) => {
 
     if ( arg === "--debug" ) {
 
-        debug()
+        debug( true )
+        debug( `Debugging enabled due to the "--debug" flag/option being passed.` )
         return
 
     }
@@ -59,6 +61,16 @@ await utils.serial( argv, async ( arg, n ) => {
 
         debug( `Valid "--dry" provided; setting DRY_RUN to "true"` )
         DRY_RUN = true
+        return
+
+    }
+
+    if ( arg === "--force" ) {
+
+        if ( FORCE ) _die( "Multiple use's of the `--force` option/flag detected!" )
+
+        debug( `Valid "--force" provided; setting FORCE to "true"` )
+        FORCE = true
         return
 
     }
@@ -120,14 +132,17 @@ if ( ! REPOSITORY ) {
 
 try {
 
-    debug( "REPOSITORY: ", REPOSITORY )
-    debug( "TARGETS: ", TARGETS )
-    debug( "DRY_RUN: ", DRY_RUN )
-    debug( "devDependencies: ", devDependencies )
+    debug( "Using the following options (set via passed arguments or defaults):" )
+    debug( "    -p:          ", REPOSITORY )
+    debug( "    --dry:       ", DRY_RUN )
+    debug( "    --force:     ", FORCE )
+    debug( "    --no-dev:    ", ! devDependencies )
+    debug( "    ...[inputs]: ", TARGETS )
 
     await bump( REPOSITORY, {
-        dry: DRY_RUN,
         devDependencies,
+        dry: DRY_RUN,
+        force: FORCE,
         targers: TARGETS,
     } )
 
